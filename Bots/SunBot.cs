@@ -1,24 +1,28 @@
 using Real_time_weather_monitoring_and_reporting_service.Configuration;
 using Real_time_weather_monitoring_and_reporting_service.Interfaces;
 using Real_time_weather_monitoring_and_reporting_service.Models;
+using WeatherMonitoringSystem.Services;
 
-namespace Real_time_weather_monitoring_and_reporting_service.Bots;
+namespace WeatherMonitoringSystem.Bots;
 
-public class SunBot:IWeatherObserver
+public class SunBot : IWeatherObserver
 {
     private readonly TemperatureBotConfiguration _config;
 
     public SunBot(TemperatureBotConfiguration config)
     {
-        _config = config?? throw new ArgumentNullException(nameof(config));
+        _config = config ?? throw new ArgumentNullException(nameof(config));
+        ConfigurationValidator.ValidateSunBot(_config);
     }
-    public void Update(WeatherData weatherData)
+
+    public void Update(WeatherData data)
     {
-        ArgumentNullException.ThrowIfNull(weatherData);
-        if (!_config.Enabled)
+        ArgumentNullException.ThrowIfNull(data);
+
+        if (_config.Enabled != true)
             return;
 
-        if (weatherData.Temperature > _config.TemperatureThreshold)
+        if (data.Temperature > _config.TemperatureThreshold)
         {
             Console.WriteLine("SunBot activated!");
             Console.WriteLine($"SunBot: {_config.Message}");
