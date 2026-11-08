@@ -1,5 +1,6 @@
 using Real_time_weather_monitoring_and_reporting_service.Interfaces;
 using Real_time_weather_monitoring_and_reporting_service.Models;
+using WeatherMonitoringSystem.Services;
 
 namespace Real_time_weather_monitoring_and_reporting_service.Services;
 
@@ -21,6 +22,8 @@ public class WeatherDataProcessor
     
     public WeatherData Process(string input)
     {
-        return _parser.Parse(input);
+        WeatherData data = _parser.Parse(input);
+        WeatherDataValidator.Validate(data);
+        return data;
     }
 }
