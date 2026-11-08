@@ -1,24 +1,28 @@
 using Real_time_weather_monitoring_and_reporting_service.Configuration;
 using Real_time_weather_monitoring_and_reporting_service.Interfaces;
 using Real_time_weather_monitoring_and_reporting_service.Models;
+using WeatherMonitoringSystem.Services;
 
-namespace Real_time_weather_monitoring_and_reporting_service.Bots;
+namespace WeatherMonitoringSystem.Bots;
 
-public class RainBot:IWeatherObserver
+public class RainBot : IWeatherObserver
 {
     private readonly HumidityBotConfiguration _config;
 
     public RainBot(HumidityBotConfiguration config)
     {
-        _config = config?? throw new ArgumentNullException(nameof(config));
+        _config = config ?? throw new ArgumentNullException(nameof(config));
+        ConfigurationValidator.ValidateRainBot(_config);
     }
-    public void Update(WeatherData weatherData)
+
+    public void Update(WeatherData data)
     {
-        ArgumentNullException.ThrowIfNull(weatherData);
-        if (!_config.Enabled)
+        ArgumentNullException.ThrowIfNull(data);
+
+        if (_config.Enabled != true)
             return;
 
-        if (weatherData.Humidity > _config.HumidityThreshold)
+        if (data.Humidity > _config.HumidityThreshold)
         {
             Console.WriteLine("RainBot activated!");
             Console.WriteLine($"RainBot: {_config.Message}");
